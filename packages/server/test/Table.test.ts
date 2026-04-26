@@ -84,4 +84,82 @@ describe("Table", () => {
       confectNotesTableDefinition,
     );
   });
+
+  it("'name' as a field", () => {
+    const confectTableTableDefinition = Table.make(
+      "table2",
+      Schema.Struct({
+        name: Schema.String,
+        description: Schema.optional(Schema.String),
+        createdBy: Schema.optionalWith(GenericId.GenericId("users"), {
+          exact: true,
+        }),
+        dummy: Schema.String,
+      }),
+    ).searchIndex("search_name", { searchField: "name" }).tableDefinition;
+    type ConfectTable = typeof confectTableTableDefinition;
+
+    const convexTableDefinition = defineTable({
+      name: v.string(),
+      description: v.optional(v.string()),
+      createdBy: v.optional(v.id("users")),
+      dummy: v.string(),
+    }).searchIndex("search_name", { searchField: "name" });
+    type ConvexTable = typeof convexTableDefinition;
+
+    expectTypeOf<ConfectTable>().toEqualTypeOf<ConvexTable>();
+    expect(convexTableDefinition).toStrictEqual(confectTableTableDefinition);
+  });
+
+  it("'name' as only required field", () => {
+    const confectTableTableDefinition = Table.make(
+      "table2",
+      Schema.Struct({
+        name: Schema.String,
+        description: Schema.optional(Schema.String),
+        createdBy: Schema.optionalWith(GenericId.GenericId("users"), {
+          exact: true,
+        }),
+        // dummy: Schema.String,
+      }),
+    ).searchIndex("search_name", { searchField: "name" }).tableDefinition;
+    type ConfectTable = typeof confectTableTableDefinition;
+
+    const convexTableDefinition = defineTable({
+      name: v.string(),
+      description: v.optional(v.string()),
+      createdBy: v.optional(v.id("users")),
+      // dummy: v.string(),
+    }).searchIndex("search_name", { searchField: "name" });
+    type ConvexTable = typeof convexTableDefinition;
+
+    expectTypeOf<ConfectTable>().toEqualTypeOf<ConvexTable>();
+    expect(convexTableDefinition).toStrictEqual(confectTableTableDefinition);
+  });
+
+  it("'title' as only required field", () => {
+    const confectTableTableDefinition = Table.make(
+      "table2",
+      Schema.Struct({
+        title: Schema.String,
+        description: Schema.optional(Schema.String),
+        createdBy: Schema.optionalWith(GenericId.GenericId("users"), {
+          exact: true,
+        }),
+        // dummy: Schema.String,
+      }),
+    ).searchIndex("search_name", { searchField: "title" }).tableDefinition;
+    type ConfectTable = typeof confectTableTableDefinition;
+
+    const convexTableDefinition = defineTable({
+      title: v.string(),
+      description: v.optional(v.string()),
+      createdBy: v.optional(v.id("users")),
+      // dummy: v.string(),
+    }).searchIndex("search_name", { searchField: "title" });
+    type ConvexTable = typeof convexTableDefinition;
+
+    expectTypeOf<ConfectTable>().toEqualTypeOf<ConvexTable>();
+    expect(convexTableDefinition).toStrictEqual(confectTableTableDefinition);
+  });
 });
